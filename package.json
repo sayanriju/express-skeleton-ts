@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "npm run start:dev",
-    "start:dev": "node-dev ./src/bin/www.ts",
+    "start:dev": "ts-node-dev ./src/bin/www.ts",
     "build": "rimraf ./dist/ && tsc",
     "lint": "eslint ./src/ --ext .ts"
   },
@@ -49,10 +49,10 @@
     "eslint": "^7.28.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
-    "node-dev": "^7.0.0",
     "prettier": "^2.3.1",
     "rimraf": "^3.0.2",
     "ts-node": "^10.0.0",
+    "ts-node-dev": "^1.1.6",
     "typescript": "^4.3.2"
   }
 }
