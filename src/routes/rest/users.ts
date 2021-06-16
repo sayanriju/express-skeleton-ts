@@ -1,6 +1,7 @@
+import { DocumentType } from '@typegoose/typegoose';
 import { Request, Response } from 'express';
 
-const User = require('../../models/user');
+import { User, UserClass } from '../../models/user';
 
 /**
  *
@@ -31,7 +32,7 @@ const User = require('../../models/user');
  */
 export async function find(req: Request, res: Response) {
   try {
-    const users = await User.find({})
+    const users: DocumentType<UserClass>[] = await User.find({})
       .select('-password -forgotpassword')
       .exec();
     return res.json({ error: false, users });
@@ -70,7 +71,9 @@ export async function find(req: Request, res: Response) {
  */
 export async function get(req: Request, res: Response) {
   try {
-    const user = await User.findOne({ _id: req.params.id })
+    const user: DocumentType<UserClass> | null = await User.findOne({
+      _id: req.params.id,
+    })
       .select('-password -forgotpassword')
       .exec();
     return res.json({ error: false, user });
@@ -137,14 +140,14 @@ export async function post(req: Request, res: Response) {
         .status(400)
         .json({ error: true, reason: 'Missing mandatory field `password`' });
     }
-    let user = await User.create({
+    const newUser: DocumentType<UserClass> = await User.create({
       email,
       phone,
       password,
       isActive,
       name,
     });
-    user = user.toObject();
+    const user = newUser.toObject(); // POJO
     delete user.password;
     delete user.forgotpassword;
     return res.json({ error: false, user });
@@ -198,7 +201,9 @@ export async function post(req: Request, res: Response) {
 export async function put(req: Request, res: Response) {
   try {
     const { phone, password, isActive, name } = req.body;
-    const user = await User.findOne({ _id: req.params.id }).exec();
+    const user: DocumentType<UserClass> | null = await User.findOne({
+      _id: req.params.id,
+    }).exec();
     if (user === null)
       return res.status(400).json({ error: true, reason: 'No such User!' });
     if (phone !== undefined) user.phone = phone;
@@ -210,8 +215,8 @@ export async function put(req: Request, res: Response) {
       user.name.first = name.first;
     if (name !== undefined && name.last !== undefined)
       user.name.last = name.last;
-    let updatedUser = await user.save();
-    updatedUser = updatedUser.toObject();
+    await user.save();
+    const updatedUser = user.toObject(); // POJO
     delete updatedUser.password;
     delete updatedUser.forgotpassword;
     return res.json({ error: false, user: updatedUser });

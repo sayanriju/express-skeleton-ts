@@ -5,7 +5,7 @@ import { slug as cuidSlug } from 'cuid';
 
 import { sendMail, MailOptsInterface } from '../../../lib/mail';
 
-import User from '../../../models/user';
+import { User } from '../../../models/user';
 
 /**
  *
@@ -48,7 +48,7 @@ export async function startWorkflow(req: Request, res: Response) {
         'Oops, there is a problem with your account. Please contact admin',
       );
     }
-    const now = Date.now();
+    const now = new Date();
     const token = cuidSlug();
     user.forgotpassword = {
       requestedAt: now,
@@ -131,7 +131,6 @@ export async function resetPassword(req: Request, res: Response) {
       );
     }
     user.password = password;
-    user.lastModifiedAt = Date.now();
     user.forgotpassword = {
       requestedAt: null,
       token: null,

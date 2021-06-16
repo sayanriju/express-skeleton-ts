@@ -1,11 +1,11 @@
-import express from 'express';
+import express, { RequestHandler } from 'express';
 const router = express.Router();
 
 import expressJwt, { secretType } from 'express-jwt';
 
-const checkJwt = expressJwt({
+const checkJwt: RequestHandler = expressJwt({
   secret: <secretType>process.env.SECRET,
-  algorithms: ['sha256'],
+  algorithms: ['HS256'],
 }); // the JWT auth check middleware
 
 import * as login from './auth';

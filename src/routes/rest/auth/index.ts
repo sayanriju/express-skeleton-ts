@@ -1,7 +1,8 @@
+import { DocumentType } from '@typegoose/typegoose';
 import { Request, Response } from 'express';
 import { sign as signJWT, Secret } from 'jsonwebtoken';
 
-import User from '../../../models/user';
+import { User, UserClass } from '../../../models/user';
 
 /**
  *
@@ -36,14 +37,14 @@ import User from '../../../models/user';
 export async function post(req: Request, res: Response) {
   try {
     // const { type } = req.params
-    const { handle, password } = req.body;
+    const { handle, password }: { handle: string; password: string } = req.body;
     if (handle === undefined || password === undefined) {
       return res.status(400).json({
         error: true,
         reason: 'Fields `handle` and `password` are mandatory',
       });
     }
-    const user = await User.findOne({
+    const user: DocumentType<UserClass> | null = await User.findOne({
       $or: [{ email: handle.toLowerCase() }, { phone: handle }],
     }).exec();
     if (user === null) throw new Error('User Not Found');
@@ -54,11 +55,12 @@ export async function post(req: Request, res: Response) {
     const payload = {
       id: user._id,
       _id: user._id,
-      fullName: user.name.full,
+      fullName: user.name?.full,
       email: user.email,
       phone: user.phone,
     };
     const token = signJWT(payload, <Secret>process.env.SECRET, {
+      algorithm: 'HS256',
       expiresIn: 3600 * 24 * 30, // 1 month
     });
     return res.json({ error: false, handle, token });

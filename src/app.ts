@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import cors from 'cors';
 import helmet from 'helmet';
+import { connect as mongooseConnect } from 'mongoose';
 
 import { config as dotenvConfig } from 'dotenv';
 dotenvConfig();
@@ -21,6 +22,13 @@ if (
   app.use(helmet());
 }
 app.use(cors());
+
+// Database setup
+mongooseConnect(process.env.MONGODB_CONNECTION_STRING || '', {
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  useUnifiedTopology: true,
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
