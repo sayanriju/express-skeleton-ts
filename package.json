@@ -1,12 +1,14 @@
 {
   "name": "express-skeleton-ts",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "start": "npm run start:dev",
     "start:dev": "ts-node-dev ./src/bin/www.ts",
-    "build": "rimraf ./dist/ && tsc",
-    "lint": "eslint ./src/ --ext .ts"
+    "lint": "eslint ./src/ --ext .ts",
+    "clean": "rimraf ./dist/",
+    "copy-files": "cpr ./src/public ./dist/ && cpr ./src/views ./dist/ && cpr ./emails ./dist/",
+    "build": "npm run clean && tsc && npm run copy-files"
   },
   "dependencies": {
     "@typegoose/typegoose": "^7.6.1",
@@ -46,6 +48,7 @@
     "@types/randomstring": "^1.1.6",
     "@typescript-eslint/eslint-plugin": "^4.26.1",
     "@typescript-eslint/parser": "^4.26.1",
+    "cpr": "^3.0.1",
     "eslint": "^7.28.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
