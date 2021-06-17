@@ -10,7 +10,7 @@ import { connect as mongooseConnect } from 'mongoose';
 import { config as dotenvConfig } from 'dotenv';
 dotenvConfig();
 
-// import webRoutes from './routes/web';
+import { router as webRoutes } from './routes/web';
 import { router as restRoutes } from './routes/rest';
 
 export const app = express();
@@ -40,7 +40,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// app.use('/', webRoutes);
+app.use('/', webRoutes);
 app.use(`/api/v${process.env.API_VERSION}`, restRoutes);
 
 // catch 404 and forward to error handler
